@@ -1,12 +1,11 @@
 
-const { app, autoUpdater, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 const isDev = require('electron-is-dev');
 const log = require('electron-log');
+const updater = require('./updater')
 
-const server = "https://hazel.drock.now.sh"
-const feed = `${server}/update/${process.platform}/${app.getVersion()}`
  
 /*require('update-electron-app')({
   repo: 'https://github.com/dRockdriguez/pruebaIonicElectron',
@@ -31,7 +30,7 @@ function createWindow() {
 
   win.loadURL(startUrl);
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   win.on('closed', function () {
     win = null
@@ -39,9 +38,10 @@ function createWindow() {
 }
 
 app.on('ready', function () {
+  setTimeout(() => {
+    updater.check()
+  }, 2000)
   createWindow();
-  autoUpdater.setFeedURL(feed)
-  autoUpdater.checkForUpdates()
 })
 
 app.on('window-all-closed', function () {
@@ -56,43 +56,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-autoUpdater.on('error', message => {
-  log.info('ERROR');
-  console.error('ERROR');
-  log.info(message);
-  console.error(message)
-})
-
-autoUpdater.on('checking-for-update', () => {
-  console.error('checking-for-update');
-  log.info('checking-for-update');
-});
-
-autoUpdater.on('update-available', () => {
-  console.error('update-available');
-  log.info('update-available');
-});
-
-autoUpdater.on('update-not-available', () => {
-  console.error('update-not-available');
-  log.info('update-not-available');
-});
-
-autoUpdater.on('update-downloaded', () => {
-  console.error('update-downloaded');
-  log.info('update-downloaded');
-});
-/*autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-  console.log('updatedownload')
-  const dialogOpts = {
-    type: 'información',
-    buttons: ['Reiniciar', 'Despues'],
-    title: 'Actualización de aplicación',
-    message: 'hay actualizaciones'
-  }
-
-  dialog.showMessageBox(dialogOpts, (response) => {
-    if (response === 0) autoUpdater.quitAndInstall()
-  })
-})*/
