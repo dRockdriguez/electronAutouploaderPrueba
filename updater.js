@@ -29,23 +29,6 @@ exports.check = () => {
             // Start download an show progress
             autoUpdater.downloadUpdate()
 
-            //Progress window
-            let progressWin = new BrowserWindow({
-                width: 350,
-                height: 35,
-                useContentSize: true,
-                autoHideMenuBar: true,
-                maximizable: false,
-                fullscreen: false,
-                fullscreenable: false,
-                resizable: false
-            })
-            autoUpdater.logger.info('despues de ventana de progress')
-
-            progressWin.loadURL(`file://${__dirname}/renderer/progress.html`)
-            progressWin.on('close', () => {
-                progressWin = null
-            })
             autoUpdater.on('download-progress', (d) => {
                 autoUpdater.logger.info('download progress', d)
                 downloadProgress = d.percent
@@ -57,7 +40,6 @@ exports.check = () => {
 
             autoUpdater.on('update-downloaded', () => {
                 // close progresswindow
-                if(progressWin) progressWin.close()
                 dialog.showMessageBox({
                     type: 'info',
                     title: 'Descargado',
